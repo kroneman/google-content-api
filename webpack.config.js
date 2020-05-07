@@ -1,12 +1,14 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 require('dotenv').config();
 
 const path = require('path');
 
-const { NODE_ENV } = process.env;
+const { NODE_ENV, GOOGLE_DOC_ENDPOINT } = process.env;
 
+console.log(GOOGLE_DOC_ENDPOINT)
 const config = {
     mode: NODE_ENV || 'development',
     devtool: 'inline-source-map',
@@ -19,6 +21,7 @@ const config = {
         path: path.resolve('./dist')
     },
     plugins: [
+        new Dotenv(),
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             templateParameters: {
@@ -36,4 +39,5 @@ const config = {
         ]
     }
 };
+
 module.exports = config;

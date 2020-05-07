@@ -10,7 +10,10 @@ const searchForFileByTitle = (
   }
 };
 
-function getGoogleDocAsHtml(file: any) {
+/**
+ * Uses the export link to get a raw html file of the google doc
+ */
+function getGoogleDocAsHtml(file: GoogleAppsScript.Drive.File) {
   const htmlExportLink = `https://docs.google.com/feeds/download/documents/export/Export?id=${file.getId()}&exportFormat=html`;
   if (!htmlExportLink) {
     throw "File cannot be converted to HTML.";
@@ -19,13 +22,13 @@ function getGoogleDocAsHtml(file: any) {
   const oAuthToken = ScriptApp.getOAuthToken();
   const response = UrlFetchApp.fetch(htmlExportLink, {
     headers: {
-      Authorization: "Bearer " + oAuthToken,
+      Authorization: `Bearer ${oAuthToken}`,
     },
     muteHttpExceptions: true,
   });
 
   if (response.getResponseCode() !== 200) {
-    throw "Error converting to HTML: " + response.getContentText();
+    throw `Error converting to HTML: ${response.getContentText()}`;
   }
 
   return response.getContentText();
@@ -33,6 +36,7 @@ function getGoogleDocAsHtml(file: any) {
 
 /**
  * Source: https://stackoverflow.com/questions/14663852/get-google-document-as-html
+ * Strips out html files
  */
 function sanitizeHtml(html: string) {
     let sanitizedHtml: string = html;
@@ -55,8 +59,8 @@ function sanitizeHtml(html: string) {
     return sanitizedHtml;
 }
 
-export function getGoogleDocContent() {
-  const googleDoc = searchForFileByTitle("web-content-document");
+export function getGoogleDocContent(fileName: string): string {
+  const googleDoc = searchForFileByTitle(fileName);
   const html = getGoogleDocAsHtml(googleDoc);
   const sanitizedHtml = sanitizeHtml(html);
   Logger.log(sanitizedHtml);

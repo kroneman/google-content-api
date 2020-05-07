@@ -1,4 +1,5 @@
 import { getGoogleDocContent } from './google-doc-content';
+const contentFileName = 'web-content-document';
 
 /**
  * This file gets run in the context of google apps script
@@ -11,7 +12,7 @@ export {};
  */
 declare let global: any 
 global.doGet = (e: any) => {
-  const htmlData = getGoogleDocContent();
+  const htmlData = getGoogleDocContent(contentFileName);
   const json = JSON.stringify({
     html: htmlData
   })
@@ -21,7 +22,7 @@ global.doGet = (e: any) => {
 
 // since doGet is run on a request permissions should be tested via this function in the online editor
 global.testPermissions = () => {
-  const htmlData = getGoogleDocContent();
+  const htmlData = getGoogleDocContent(contentFileName);
   const json = JSON.stringify({
     html: htmlData
   });
